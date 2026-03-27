@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, TextInput, Button, TouchableWithoutFeedback, Ke
 import { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker'; 
 
 export default function Index() {
   const [tekst, setTekst] = useState(''); 
