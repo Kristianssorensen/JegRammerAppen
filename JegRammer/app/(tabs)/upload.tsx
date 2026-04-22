@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TextInput, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Button, TouchableWithoutFeedback, Keyboard, Platform, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
@@ -23,10 +23,16 @@ export default function Index() {
   };
 
 
+  const dismissKeyboard = () => {
+    if (Platform.OS !== 'web' && Keyboard.dismiss) {
+      Keyboard.dismiss();
+    }
+  };
+
   
   
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={dismissKeyboard} disabled={showPicker}>
       <View style={styles.background}>
         <View style={styles.container}>
           <Text style={styles.titel}>Opret Et Event</Text>
@@ -35,7 +41,7 @@ export default function Index() {
               style={styles.input}
               value={tekst}
               onChangeText={setTekst}
-              placeholder="Skriv en title til dit Event"
+              placeholder="Skriv en titel til dit Event"
             /> 
             <Text style={styles.headings}>Beskrivelse:</Text>
             <TextInput
@@ -49,16 +55,33 @@ export default function Index() {
             
             
             <Text style={[styles.headings,{paddingBottom: 5}]}>Hvornår:</Text>
-                <DateTimePicker
-                  value={time}
-                  mode="datetime"
-                  is24Hour={true}
-                  onChange={(event, selectedDate) => {
-                    if (!selectedDate) return;
-                    setShowPicker(false);
+            <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.timePicker}>
+              <Text style={styles.timeText}>
+                {time.toLocaleString('da-DK', { 
+                  year: 'numeric', 
+                  month: '2-digit', 
+                  day: '2-digit', 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                })}
+              </Text>
+            </TouchableOpacity>
+            {(Platform.OS === 'ios'|| Platform.OS === 'android' || showPicker) && (
+              <DateTimePicker
+                value={time}
+                mode="datetime"
+                is24Hour={true}
+                display={Platform.OS === 'ios' ? 'default' : 'default'}
+                onChange={(event, selectedDate) => {
+                  if (event.type === 'set' && selectedDate) {
                     setTime(selectedDate);
-                  }}
-                />
+                  }
+                  if (Platform.OS === 'android') {
+                    setShowPicker(false);
+                  }
+                }}
+              />
+            )}
             <Text style={styles.headings}>Kategori:</Text>
            
             
@@ -110,5 +133,17 @@ const styles = StyleSheet.create({
     padding: 10,
     color: '#ccc',
     
+  },
+  timePicker: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    backgroundColor: '#fff',
+    marginBottom: 10,
+  },
+  timeText: {
+    color: '#000',
+    fontSize: 16,
   }
 });
