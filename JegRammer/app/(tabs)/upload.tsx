@@ -1,11 +1,18 @@
-import { Text, View, StyleSheet, TextInput, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { 
+    Text, View, StyleSheet, TextInput, Button, 
+    Keyboard, TouchableWithoutFeedback, Pressable, ScrollView
+} from 'react-native';
+
 import { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+
 export default function Index() {
-  const [tekst, setTekst] = useState(''); 
+  const [title, setTitle,] = useState(''); 
+  const [beskrivelse, setBeskrivelse,] = useState('')
+  const [sted, setSted] = useState('')
   const [time, setTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
@@ -13,40 +20,71 @@ export default function Index() {
   
   // funktion til upload til fire base 
   const uploadEvent = async () => {
-    if (tekst.trim() === '') return; // gør ingenting hvis feltet er tomt
+    if (title.trim() === '') return; // gør ingenting hvis feltet er tomt
     await addDoc(collection(db, 'events'), {
-      titel: tekst,
-      oprettet: new Date(),
-    });
-    setTekst(''); // tømmer feltet efter upload
+    titel: title,
+    beskrivelse: beskrivelse,
+    Lokation: sted,
+    oprettet: new Date(),
+    tidspunkt: time,
+    kategori: kategori,
+  });
+    // tømmer feltet efter upload
+    setBeskrivelse('');
+    setTitle(''); 
+    setSted('');
+    setTime(new Date());
+    //logger eventet til consolen
     console.log('Event uploadet!')
+  };
+ 
+  // til at lave katrgori propdown
+  const kategorier = ['Mad 🍔', 'Gaming 🎮', 'Sport ⚽', 'Lektier 📚', 'Andet 🎉'];
+  const [kategori, setKategori] = useState<string | null>(null);
+  const [visDropdown, setVisDropdown] = useState(false);
+
+  const kategorifarver: Record<string, string> = {
+  'Mad 🍔':     '#e67e22',
+  'Gaming 🎮':  '#8e44ad',
+  'Sport ⚽':   '#2980b9',
+  'Lektier 📚': '#27ae60',
+  'Andet 🎉':   '#e74c3c',
   };
 
 
-  
+
+
   
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.background}>
-        <View style={styles.container}>
+        <View style={styles.contaner}>
           <Text style={styles.titel}>Opret Et Event</Text>
             <Text style={styles.headings}>Title:</Text>
-            <TextInput
-              style={styles.input}
-              value={tekst}
-              onChangeText={setTekst}
-              placeholder="Skriv en title til dit Event"
-            /> 
+              <TextInput
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Skriv en title til dit Event"
+              /> 
+
             <Text style={styles.headings}>Beskrivelse:</Text>
-            <TextInput
-              style={[styles.input, {height: 130}]}
-              multiline
-              //tilføj en value til upload funktionen
-              placeholder="Skriv en kort beskrivelse"
-            />
+              <TextInput
+                style={[styles.input, {height: 130}]}
+                value={beskrivelse}
+                onChangeText={setBeskrivelse}
+                multiline
+                placeholder="Skriv en kort beskrivelse"
+                
+              />
 
             <Text style={styles.headings}>Sted:</Text>
-            
+              <TextInput
+                style={styles.input}
+                value={sted}
+                onChangeText={setSted}
+                placeholder='hvor går det ned?'
+              />
             
             <Text style={[styles.headings,{paddingBottom: 5}]}>Hvornår:</Text>
                 <DateTimePicker
@@ -59,11 +97,40 @@ export default function Index() {
                     setTime(selectedDate);
                   }}
                 />
+
             <Text style={styles.headings}>Kategori:</Text>
-           
             
-            
-          <Button title="Upload" onPress={uploadEvent} /> 
+            <Pressable
+              style={[styles.dropdown, { backgroundColor: kategori ? kategorifarver[kategori] : '#444' }]}
+              onPress={() => setVisDropdown(!visDropdown)}
+            >
+          
+            <Text style={{ color: 'white' }}>
+              {kategori ?? 'Vælg kategori'}
+            </Text>
+
+            </Pressable>
+            {visDropdown && (
+              <ScrollView style={styles.dropdownListe}>
+                {kategorier.map((k) => (
+                  <Pressable
+                    key={k}
+                    style={[styles.dropdownItem, { backgroundColor: kategorifarver[k] }]}
+                    onPress={() => {
+                      setKategori(k);
+                      setVisDropdown(false);
+                    }}
+                  >
+                    <Text style={{ color: 'white' }}>{k}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            )}
+        </View>
+
+        <View style={styles.padding}/>
+        <View style={styles.button}>
+            <Button title="Upload" onPress={uploadEvent} /> 
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -80,22 +147,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 50,
   },
-  container:{
+
+  contaner:{
     backgroundColor: '#2ec7d8',
     height: '80%',
     width: '80%',
     padding: 20,
     borderRadius: 20,
-    
   },
+  
   headings:{
     color: 'white',
     padding: 5,
     paddingTop: 20,
     fontWeight: '800',
-
-
   },
+
   titel:{
     color: 'white',
     fontWeight: '900',
@@ -105,10 +172,43 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#e3e3e3',
     borderRadius: 8,
     padding: 10,
-    color: '#ccc',
     
+  },
+  button: {
+    width: '80%',
+    padding: 5,
+    backgroundColor: '#1637aa',
+    borderRadius: 20,
+    
+  },
+  dropdown: {
+  padding: 12,
+  borderRadius: 8,
+  marginTop: 4,
+  
+  },
+
+  dropdownItem: {
+    padding: 12,
+    marginBottom: 2,
+    borderRadius: 6,
+  },
+
+  dropdownListe: {
+  backgroundColor: '#1a1a2e',
+  borderRadius: 10,
+  marginTop: 4,
+  maxHeight: 180, 
+  padding: 4,
+  minHeight: 100,
+  zIndex: 999,
+  },
+
+ 
+  padding: {
+    padding: 10,
   }
 });
