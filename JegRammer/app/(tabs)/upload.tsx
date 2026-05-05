@@ -1,12 +1,17 @@
-import { 
-    Text, View, StyleSheet, TextInput, Button, 
-    Keyboard, TouchableWithoutFeedback, Pressable, ScrollView
+import {
+  Keyboard,
+  Pressable, ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
 
-import { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../firebaseConfig';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { addDoc, collection } from 'firebase/firestore';
+import { useState } from 'react';
+import { db } from '../../firebaseConfig';
 
 
 export default function Index() {
@@ -129,9 +134,9 @@ export default function Index() {
         </View>
 
         <View style={styles.padding}/>
-        <View style={styles.button}>
-            <Button title="Upload" onPress={uploadEvent} /> 
-        </View>
+        <Pressable style={styles.button} onPress={uploadEvent}>
+            <Text style={styles.backText}>Upload dit event</Text>
+        </Pressable>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -179,10 +184,10 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '80%',
-    padding: 5,
     backgroundColor: '#1637aa',
+    padding: 15,
     borderRadius: 20,
-    
+    alignItems: 'center',
   },
   dropdown: {
   padding: 12,
@@ -210,5 +215,10 @@ const styles = StyleSheet.create({
  
   padding: {
     padding: 10,
-  }
+  },
+  backText: {
+    color: 'white',
+    fontWeight: '800',
+    fontSize: 16,
+  },
 });
