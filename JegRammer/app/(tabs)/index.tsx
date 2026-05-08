@@ -35,6 +35,7 @@ export default function HomeScreen() {
     'Sport ⚽':   '#2980b9',
     'Lektier 📚': '#27ae60',
     'Andet 🎉':   '#e74c3c',
+    'Roadtrip 🏎️': '#c517cb',
   };
 
   return (
@@ -72,7 +73,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
     paddingBottom: 0,
-    co
   },
 
   card: {

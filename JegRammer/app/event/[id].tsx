@@ -10,6 +10,7 @@ const kategorifarver: Record<string, string> = {
   'Sport ⚽':   '#2980b9',
   'Lektier 📚': '#27ae60',
   'Andet 🎉':   '#e74c3c',
+  'Roadtrip 🏎️': '#c517cb',
 };
 
 export default function EventScreen() {

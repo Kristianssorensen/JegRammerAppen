@@ -45,7 +45,7 @@ export default function Index() {
   };
  
   // til at lave katrgori propdown
-  const kategorier = ['Mad 🍔', 'Gaming 🎮', 'Sport ⚽', 'Lektier 📚', 'Andet 🎉'];
+  const kategorier = ['Mad 🍔', 'Gaming 🎮', 'Sport ⚽', 'Lektier 📚', 'Andet 🎉','Roadtrip 🏎️' ];
   const [kategori, setKategori] = useState<string | null>(null);
   const [visDropdown, setVisDropdown] = useState(false);
 
@@ -55,6 +55,7 @@ export default function Index() {
   'Sport ⚽':   '#2980b9',
   'Lektier 📚': '#27ae60',
   'Andet 🎉':   '#e74c3c',
+  'Roadtrip 🏎️': '#c517cb',
   };
 
 
