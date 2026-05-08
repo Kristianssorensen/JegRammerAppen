@@ -39,6 +39,7 @@ export default function Index() {
     setTitle(''); 
     setSted('');
     setTime(new Date());
+    setKategori (null)
     //logger eventet til consolen
     console.log('Event uploadet!')
   };
