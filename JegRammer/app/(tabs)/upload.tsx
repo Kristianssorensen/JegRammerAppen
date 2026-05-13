@@ -137,7 +137,7 @@ export default function Index() {
 
         <View style={styles.padding}/>
         <Pressable style={styles.button} onPress={uploadEvent}>
-            <Text style={styles.backText}>Upload dit event</Text>
+            <Text style={styles.backText}>Opret dit event</Text>
         </Pressable>
       </View>
     </TouchableWithoutFeedback>
